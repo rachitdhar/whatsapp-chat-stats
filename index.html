@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Whatsapp Chat Stats</title>
+
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                font-family: sans-serif;
+            }
+
+            body {
+                padding-left: 50px;
+                padding-right: 50px;
+            }
+
+            .center {
+                height: 10%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            input[type="file"] {
+                font-size: 16px;
+            }
+
+            .stat-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 6px 0;
+            }
+
+            .stat-key {
+                width: 160px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .stat-bar-wrap {
+                width: 300px;
+                height: 14px;
+                background: none;
+                overflow: hidden;
+            }
+
+            .stat-bar {
+                height: 100%;
+            }
+
+            .stat-value {
+                width: 70px;
+                text-align: right;
+                font-variant-numeric: tabular-nums;
+            }
+
+            #stats {
+                padding-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>WhatsApp Chat Stats</h1>
+        <div class="center">
+            <input
+            type="file"
+            id="fileInput"
+            accept=".txt"/>
+        </div>
+
+        <div id="stats"></div>
+        <script src="parser.js"></script>
+    </body>
+</html>
