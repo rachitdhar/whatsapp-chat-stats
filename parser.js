@@ -1,5 +1,16 @@
 let data = "";
 
+const colors = [
+    "#4a90e2",
+    "#e94e77",
+    "#f4b400",
+    "#1abc9c",
+    "#e67e22",
+    "#5d6d7e",
+    "#9b59b6",
+    "#1abc9c"
+];
+
 document.getElementById("fileInput").addEventListener("change", function (event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -61,11 +72,21 @@ function startsWithDate(line) {
 
 function parseDateTime(dateTimeStr) {
   // "05/08/21, 14:31"
+  // "05/08/2021, 2:31 PM"
   const [datePart, timePart] = dateTimeStr.split(", ");
 
   const [day, month, yearShort] = datePart.split("/").map(Number);
-  const year = yearShort < 70 ? 2000 + yearShort : 1900 + yearShort;
+  const year = yearShort > 99 ? yearShort
+              : yearShort < 70 ? 2000 + yearShort : 1900 + yearShort;
 
+  if (timePart.includes("AM") || timePart.includes("PM")) {
+    const [t, timeType] = timePart.split(' ');
+    let [hour, minute] = t.split(":").map(Number);
+
+    if (timeType === 'PM') hour += 12;
+    else if (hour === 12) hour = 0;
+    return new Date(year, month - 1, day, hour, minute);
+  }
   const [hour, minute] = timePart.split(":").map(Number);
 
   return new Date(year, month - 1, day, hour, minute);
@@ -277,16 +298,6 @@ function renderArrayStat(parent, heading, arr, labelFn, barColor) {
   renderStatBlock(parent, heading, data, barColor);
 }
 
-const colors = [
-    "#4a90e2",
-    "#e94e77",
-    "#f4b400",
-    "#1abc9c",
-    "#e67e22",
-    "#5d6d7e",
-    "#9b59b6",
-    "#1abc9c"
-];
 
 function renderHTML(stats) {
     const container = document.getElementById("stats");
