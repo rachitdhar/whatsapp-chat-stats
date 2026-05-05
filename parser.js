@@ -26,8 +26,13 @@ document.getElementById("fileInput").addEventListener("change", function (event)
 });
 
 /*
-The structure of a single message is of the form:
-dd/MM/yy, HH:mm - NAME: MESSAGE
+  The structure of a single message is of the form:
+
+  Android
+  dd/MM/yy, HH:mm - NAME: MESSAGE
+
+  iOS
+  [dd/MM/yy, HH:mm:ss AM/PM] NAME: MESSAGE
 */
 
 function parse(data) {
@@ -35,7 +40,9 @@ function parse(data) {
 
     let lines = data.split('\n');
     lines.forEach(line => {
-        let dtEnd = line.indexOf('-');
+	let isiOS = line[0] === '[';
+	let dtStart = isiOS ? 1 : 0;
+        let dtEnd = isiOS ? line.indexOf(']') : line.indexOf('-');
 
         if (messages.length > 0 && !startsWithDate(line)) {
             messages.at(-1).msg += line;
@@ -43,7 +50,7 @@ function parse(data) {
         }
 
         // extract the date and time
-        const datetime = line.substring(0, dtEnd - 1);
+        const datetime = line.substring(dtStart, dtEnd - 1);
 
         // extract name and message
         let message = line.substring(dtEnd + 2);
@@ -344,4 +351,3 @@ function renderHTML(stats) {
     colors[7]
     );
 }
-
