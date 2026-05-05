@@ -42,7 +42,7 @@ function parse(data) {
     lines.forEach(line => {
 	let isiOS = line[0] === '[';
 	let dtStart = isiOS ? 1 : 0;
-        let dtEnd = isiOS ? line.indexOf(']') : line.indexOf('-');
+        let dtEnd = isiOS ? line.indexOf(']') : line.indexOf('-') - 1;
 
         if (messages.length > 0 && !startsWithDate(line)) {
             messages.at(-1).msg += line;
@@ -50,13 +50,16 @@ function parse(data) {
         }
 
         // extract the date and time
-        const datetime = line.substring(dtStart, dtEnd - 1);
+        const datetime = line.substring(dtStart, dtEnd);
 
         // extract name and message
-        let message = line.substring(dtEnd + 2);
+        let message = line.substring(dtEnd + 1);
         if (!message.includes(':')) return;
         let [name, msg] = message.split(': ');
-        const is_media = msg.includes('<Media omitted>');
+        const is_media = !!msg && (
+	    (!isiOS && msg.includes('<Media omitted>')) ||
+	    (isiOS && msg.includes('image omitted'))
+	);
 
         messages.push({
             datetime: datetime,
@@ -72,8 +75,8 @@ function parse(data) {
 
 
 function startsWithDate(line) {
-  const dateRegex = /^\d{2}\/\d{2}\/\d{2}, \d{2}:\d{2}/;
-  return dateRegex.test(line);
+    const dateRegex = /^\[?\d{2}\/\d{2}\/\d{2}, \d{2}:\d{2}/;
+    return dateRegex.test(line);
 }
 
 
